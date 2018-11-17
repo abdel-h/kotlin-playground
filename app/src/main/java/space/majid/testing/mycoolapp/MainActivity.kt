@@ -24,11 +24,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val sharedPreferences = getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE)
-        val type = object : TypeToken<ArrayList<String>>() {}.type
-        val m = sharedPreferences.getString("allMessages", null)
-        messages = gson.fromJson(m, type)
-
         setContentView(R.layout.activity_main)
         updateMessageView()
         btn_send.setOnClickListener {
@@ -57,13 +52,6 @@ class MainActivity : AppCompatActivity() {
                         messages.add(message)
                         updateMessageView()
 
-                        // Save stuff
-                        val sp = getSharedPreferences(getString(R.string.preferences_file_key), Context.MODE_PRIVATE)
-                        with(sp.edit()) {
-                            val json = gson.toJson(messages)
-                            putString("allMessages", json)
-                            apply()
-                        }
                     }
                 }
             }
