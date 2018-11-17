@@ -26,7 +26,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
-        messages = readMessagesFromFile()
         updateMessageView()
         btn_send.setOnClickListener {
             startActivityForResult<ConfirmationActivity>(
@@ -53,7 +52,6 @@ class MainActivity : AppCompatActivity() {
                         }
                         messages.add(message)
                         updateMessageView()
-                        saveMessagesIntoFile()
                     }
                 }
             }
@@ -66,18 +64,7 @@ class MainActivity : AppCompatActivity() {
                             .joinToString("\n")
     }
 
-    private fun readMessagesFromFile() : ArrayList<String> {
-        val file = File(filesDir, "messages.json")
-        val type = object : TypeToken<ArrayList<String>>() {}.type
-        val messages = file.readText(Charset.defaultCharset())
-        return gson.fromJson<ArrayList<String>>(messages, type)
-    }
 
-    private fun saveMessagesIntoFile() {
-        val file = File(filesDir, "messages.json")
-        val json = gson.toJson(messages)
-        file.writeText(json)
-    }
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putStringArrayList(STATE_MESSAGES, messages)
