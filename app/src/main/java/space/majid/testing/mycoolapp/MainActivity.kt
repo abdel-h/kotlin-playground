@@ -10,8 +10,8 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivityForResult
 import com.google.gson.reflect.TypeToken
-
-
+import java.io.File
+import java.nio.charset.Charset
 
 
 class MainActivity : AppCompatActivity() {
@@ -19,12 +19,14 @@ class MainActivity : AppCompatActivity() {
         const val STATE_MESSAGES = "MainActivity.messages"
     }
 
+    private val gson = Gson()
+
     private var messages: ArrayList<String> = arrayListOf()
-    private var gson: Gson = Gson()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_main)
+        messages = readMessagesFromFile()
         updateMessageView()
         btn_send.setOnClickListener {
             startActivityForResult<ConfirmationActivity>(
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         messages.add(message)
                         updateMessageView()
-
+                        saveMessagesIntoFile()
                     }
                 }
             }
@@ -62,6 +64,19 @@ class MainActivity : AppCompatActivity() {
         txt_messages.text = messages
                             .reversed()
                             .joinToString("\n")
+    }
+
+    private fun readMessagesFromFile() : ArrayList<String> {
+        val file = File(filesDir, "messages.json")
+        val type = object : TypeToken<ArrayList<String>>() {}.type
+        val messages = file.readText(Charset.defaultCharset())
+        return gson.fromJson<ArrayList<String>>(messages, type)
+    }
+
+    private fun saveMessagesIntoFile() {
+        val file = File(filesDir, "messages.json")
+        val json = gson.toJson(messages)
+        file.writeText(json)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
