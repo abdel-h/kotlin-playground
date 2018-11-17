@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="btn_envoyer">Envoyer</string>
+    <string name="text_message_hint">Votre message...</string>
+    <string name="title_activity_confirmation">Confirmation</string>
+    <string name="confirm_header">Voulez-vous vraiment envoyer le message :</string>
+    <string name="btn_confirm">Confirmer</string>
+    <string name="btn_edit">Modifier</string>
+    <string name="btn_cancel">Annuler</string>
+    <string name="preferences_file_key">myCoolAppPre_123</string>
+</resources>
