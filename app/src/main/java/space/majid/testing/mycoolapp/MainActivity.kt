@@ -10,7 +10,9 @@ import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.startActivityForResult
 import com.google.gson.reflect.TypeToken
+import org.jetbrains.anko.db.asMapSequence
 import org.jetbrains.anko.db.insert
+import org.jetbrains.anko.db.select
 import space.majid.testing.mycoolapp.database
 import java.io.File
 import java.nio.charset.Charset
@@ -21,22 +23,22 @@ class MainActivity : AppCompatActivity() {
         const val STATE_MESSAGES = "MainActivity.messages"
     }
 
-
-
     private val gson = Gson()
 
     private var messages: ArrayList<String> = arrayListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
-        database.use {
-            insert(
-                    "messages",
-                    "id" to 12,
-                    "sender" to "test",
-                    "body" to "testing",
-                    "date" to 1255
-            )
-        }
+
         super.onCreate(savedInstanceState)
+
+        database.use {
+            select("messages", "body")
+                    .whereArgs("sender = {name} ", "name" to "Majid").exec {
+                        for(row in asMapSequence()) {
+                            val message = row["body"] as String
+                            messages.add(message)
+                        }
+                    }
+        }
 
         setContentView(R.layout.activity_main)
         updateMessageView()
@@ -62,6 +64,13 @@ class MainActivity : AppCompatActivity() {
                         val message = new_message.text.toString()
                         if(messages.size == 10) {
                             messages.removeAt(0)
+                        }
+                        database.use {
+                            insert( "messages",
+                                    "sender" to "Majid",
+                                    "body" to message,
+                                    "date" to System.currentTimeMillis()
+                            )
                         }
                         messages.add(message)
                         updateMessageView()
