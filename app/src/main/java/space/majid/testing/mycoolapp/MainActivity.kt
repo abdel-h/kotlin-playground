@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
             insert(
                     "messages",
                     "id" to 12,
-                    "sender" to "majid",
+                    "sender" to "test",
                     "body" to "testing",
                     "date" to 1255
             )
